@@ -4,12 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>NEXUS · Wallet</title>
-<link rel="apple-touch-icon" sizes="180x180" href="icon.png">
-<link rel="icon" type="image/png" href="icon.png">
-
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="NEXUS">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Inter+Tight:wght@300;400;500;600;700&display=swap');
 
@@ -50,7 +44,7 @@ body{
 /* ── TOP BAR ── */
 .topbar{
   height:56px;
-  background:var(--bg);
+  background:transparent;
   display:flex;
   align-items:center;
   justify-content:space-between;
@@ -58,7 +52,10 @@ body{
   flex-shrink:0;
   position:relative;
   z-index:10;
-  
+  transition:background .35s ease, backdrop-filter .35s ease;
+}
+.topbar.scrolled{
+  background:var(--bg);
 }
 .logo{
   display:flex;
@@ -86,17 +83,23 @@ body{
 }
 .gear-btn{
   width:36px;height:36px;
-  background:var(--bg3);
-  border:1px solid var(--border);
+  background:rgba(34,33,33,0.4);
+  border:1px solid rgba(255,255,255,0.06);
   border-radius:10px;
   display:flex;align-items:center;justify-content:center;
   cursor:pointer;
   font-size:16px;
   color:var(--muted2);
-  transition:all .15s;
+  transition:all .35s;
   user-select:none;
+  backdrop-filter:blur(8px);
 }
 .gear-btn:active{background:var(--bg4);color:var(--text)}
+.topbar.scrolled .gear-btn{
+  background:var(--bg3);
+  border-color:var(--border);
+  backdrop-filter:none;
+}
 
 /* ── SCROLL BODY ── */
 .scroll-body{
@@ -580,7 +583,7 @@ body{
 .hero-bg-wrap{
   position:relative;
   overflow:hidden;
-  padding-bottom:40px;
+  padding-bottom:20px;
 }
 .hero-bg-wrap > *:not(#heroBg){
   position:relative;
@@ -589,7 +592,7 @@ body{
 .hero-fade{
   position:absolute;
   bottom:0;left:0;right:0;
-  height:100px;
+  height:70px;
   background:linear-gradient(to bottom, transparent, var(--bg));
   pointer-events:none;
   z-index:2;
@@ -1616,6 +1619,17 @@ document.querySelectorAll('.toggle:not(#livePriceToggle)').forEach(t=>t.addEvent
 loadHoldings();renderAll();
 // init nav pill
 setTimeout(()=>animateNavPill('home'), 50);
+
+// ── TOPBAR SCROLL TRANSPARENCY ──
+(function(){
+  const pageEl = document.getElementById('page-home');
+  const topbar = document.querySelector('.topbar');
+  if(!pageEl||!topbar) return;
+  pageEl.addEventListener('scroll', function(){
+    if(this.scrollTop > 40) topbar.classList.add('scrolled');
+    else topbar.classList.remove('scrolled');
+  }, {passive:true});
+})();
 
 // ── HERO BACKGROUND ANIMATION ──
 (function(){
