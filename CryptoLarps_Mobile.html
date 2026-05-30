@@ -1714,6 +1714,8 @@ let liveEnabled = false;
 function toggleLivePrices(){
   liveEnabled = !liveEnabled;
 
+localStorage.setItem('livePricesEnabled', liveEnabled);
+
   const toggle = document.getElementById("livePriceToggle");
 
   if(liveEnabled){
@@ -1728,6 +1730,24 @@ function toggleLivePrices(){
     toggle.classList.add("off");
     document.getElementById("liveStatus").textContent = "Offline";
   }
+}
+
+//Live price storage
+function enableLivePrices(){
+  liveEnabled = true;
+
+  document
+    .getElementById('livePriceToggle')
+    .classList.remove('off');
+
+  fetchLivePrices();
+
+  liveInterval = setInterval(
+    fetchLivePrices,
+    30000
+  );
+
+  document.getElementById('liveStatus').textContent = 'Live';
 }
 
 </script>
