@@ -762,68 +762,97 @@ body{
 
 /* ── COIN DETAIL SHEET ── */
 .cd-sheet-overlay{
-  position:fixed;inset:0;background:rgba(0,0,0,0.55);
-  z-index:60;display:none;align-items:flex-end;
-  backdrop-filter:blur(4px);
-}
-.cd-sheet-overlay.open{display:flex}
-.cd-sheet{
-  width:100%;max-height:88vh;
+  position:fixed;inset:0;
+  z-index:60;display:none;flex-direction:column;
   background:var(--bg2);
-  border-radius:22px 22px 0 0;
   overflow-y:auto;overflow-x:hidden;
-  padding:0 0 40px;
   transform:translateY(100%);
-  transition:transform .32s cubic-bezier(.32,1,.6,1);
+  transition:transform .38s cubic-bezier(.32,1,.55,1);
 }
-.cd-sheet-overlay.open .cd-sheet{transform:translateY(0)}
-.cd-sheet::-webkit-scrollbar{display:none}
-.cs-handle{width:36px;height:4px;background:var(--bg4);border-radius:2px;margin:12px auto 0}
-.cs-header{
-  display:flex;align-items:center;gap:12px;
-  padding:16px 18px 10px;
+.cd-sheet-overlay.visible{display:flex}
+.cd-sheet-overlay.open{transform:translateY(0)}
+.cd-sheet-overlay.closing{transform:translateY(100%)}
+.cd-sheet-overlay::-webkit-scrollbar{display:none}
+.cd-sheet{ width:100%; padding-bottom:50px; }
+
+/* Back button header */
+.cs-back-bar{
+  display:flex;align-items:center;gap:10px;
+  padding:14px 16px 6px;
+  position:sticky;top:0;z-index:2;
+  background:var(--bg2);
 }
-.cs-icon{
-  width:44px;height:44px;border-radius:14px;
-  display:flex;align-items:center;justify-content:center;
-  font-size:20px;font-weight:700;flex-shrink:0;
-}
-.cs-title{flex:1}
-.cs-name{font-size:17px;font-weight:700;color:var(--text)}
-.cs-sym{font-size:12px;color:var(--muted2);margin-top:1px}
-.cs-close{
-  width:32px;height:32px;border-radius:50%;
+.cs-back-btn{
+  width:36px;height:36px;border-radius:50%;
   background:var(--bg3);border:none;cursor:pointer;
   display:flex;align-items:center;justify-content:center;
-  color:var(--muted2);font-size:18px;line-height:1;
+  color:var(--text);flex-shrink:0;
 }
+.cs-back-btn svg{display:block}
+.cs-header-info{flex:1;display:flex;align-items:center;gap:10px}
+.cs-icon{
+  width:38px;height:38px;border-radius:12px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;font-weight:700;flex-shrink:0;
+}
+.cs-name{font-size:16px;font-weight:700;color:var(--text)}
+.cs-sym-small{font-size:11px;color:var(--muted2)}
+
+/* Live badge */
+.cs-live-badge{
+  display:flex;align-items:center;gap:5px;
+  font-size:10px;font-weight:700;color:#3dd68c;
+  background:rgba(61,214,140,0.10);
+  border-radius:20px;padding:3px 8px;
+  letter-spacing:.3px;
+}
+.cs-live-dot{
+  width:6px;height:6px;border-radius:50%;
+  background:#3dd68c;
+  animation:livePulse 1.4s ease-in-out infinite;
+}
+@keyframes livePulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
+
+/* Price */
 .cs-price-row{
-  padding:4px 18px 14px;
+  padding:6px 18px 10px;
   display:flex;align-items:baseline;gap:10px;
+  flex-wrap:wrap;
 }
-.cs-price{font-size:28px;font-weight:800;color:var(--text)}
-.cs-chg{font-size:13px;font-weight:600;border-radius:6px;padding:2px 7px}
+.cs-price{font-size:32px;font-weight:800;color:var(--text);transition:color .3s}
+.cs-price.flash-up{color:#3dd68c}
+.cs-price.flash-down{color:#f06060}
+.cs-chg{font-size:13px;font-weight:600;border-radius:6px;padding:3px 8px}
 .cs-chg.pos{background:rgba(61,214,140,0.12);color:#3dd68c}
 .cs-chg.neg{background:rgba(240,96,96,0.12);color:#f06060}
 
-/* Chart */
+/* Chart — full bleed, no side padding */
 .cs-chart-wrap{
-  padding:0 18px 6px;position:relative;
+  position:relative;width:100%;
+  margin-bottom:0;
 }
+.cs-chart-canvas{
+  display:block;width:100%;height:180px;
+}
+
+/* Range buttons — larger, pill style, scrollable row */
 .cs-chart-ranges{
-  display:flex;gap:4px;padding:0 18px 10px;
+  display:flex;gap:6px;padding:10px 16px 12px;
+  overflow-x:auto;
 }
+.cs-chart-ranges::-webkit-scrollbar{display:none}
 .cs-range-btn{
-  font-size:11px;font-weight:600;padding:3px 9px;
-  border-radius:7px;border:none;cursor:pointer;
+  font-size:13px;font-weight:700;padding:7px 16px;
+  border-radius:20px;border:none;cursor:pointer;
   background:var(--bg3);color:var(--muted2);
+  white-space:nowrap;flex-shrink:0;
   transition:all .15s;
 }
 .cs-range-btn.active{background:var(--accent);color:#fff}
 
 /* Holdings summary */
 .cs-holding-box{
-  margin:8px 18px 14px;
+  margin:4px 16px 12px;
   background:var(--bg3);border-radius:14px;
   padding:14px 16px;
   display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;
@@ -832,32 +861,29 @@ body{
 .cs-hb-label{font-size:10px;color:var(--muted2);font-weight:500;text-transform:uppercase;letter-spacing:.4px}
 .cs-hb-val{font-size:14px;font-weight:700;color:var(--text)}
 
-/* Stats row */
+/* Stats */
 .cs-stats{
   display:grid;grid-template-columns:1fr 1fr;
-  gap:8px;margin:0 18px 16px;
+  gap:8px;margin:0 16px 16px;
 }
-.cs-stat{
-  background:var(--bg3);border-radius:12px;
-  padding:11px 13px;
-}
-.cs-stat-label{font-size:10px;color:var(--muted2);text-transform:uppercase;letter-spacing:.4px;margin-bottom:3px}
-.cs-stat-val{font-size:13px;font-weight:700;color:var(--text)}
+.cs-stat{background:var(--bg3);border-radius:12px;padding:12px 14px;}
+.cs-stat-label{font-size:10px;color:var(--muted2);text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px}
+.cs-stat-val{font-size:14px;font-weight:700;color:var(--text)}
 
 /* Trade buttons */
 .cs-trade-row{
   display:grid;grid-template-columns:1fr 1fr;
-  gap:10px;padding:0 18px;margin-top:4px;
+  gap:10px;padding:0 16px;margin-top:4px;
 }
 .cs-buy-btn{
-  padding:14px;border-radius:14px;border:none;cursor:pointer;
-  font-size:15px;font-weight:700;
+  padding:15px;border-radius:14px;border:none;cursor:pointer;
+  font-size:16px;font-weight:700;
   background:linear-gradient(135deg,#22c55e,#16a34a);color:#fff;
   transition:opacity .15s;
 }
 .cs-sell-btn{
-  padding:14px;border-radius:14px;border:none;cursor:pointer;
-  font-size:15px;font-weight:700;
+  padding:15px;border-radius:14px;border:none;cursor:pointer;
+  font-size:16px;font-weight:700;
   background:linear-gradient(135deg,#cc5050,#a03030);color:#fff;
   transition:opacity .15s;
 }
@@ -1188,34 +1214,56 @@ body{
 </div>
 
 
-<!-- ── COIN DETAIL SHEET ── -->
-<div class="cd-sheet-overlay" id="cdSheetOverlay" onclick="if(event.target===this)closeCoinDetail()">
+<!-- ── COIN DETAIL SHEET (full screen) ── -->
+<div class="cd-sheet-overlay" id="cdSheetOverlay">
   <div class="cd-sheet" id="cdSheet">
-    <div class="cs-handle"></div>
-    <div class="cs-header">
-      <div class="cs-icon" id="csIcon"></div>
-      <div class="cs-title">
-        <div class="cs-name" id="csName"></div>
-        <div class="cs-sym" id="csSym"></div>
+    <!-- Back bar -->
+    <div class="cs-back-bar">
+      <button class="cs-back-btn" onclick="closeCoinDetail()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <polyline points="15 18 9 12 15 6"/>
+        </svg>
+      </button>
+      <div class="cs-header-info">
+        <div class="cs-icon" id="csIcon"></div>
+        <div>
+          <div class="cs-name" id="csName"></div>
+          <div class="cs-sym-small" id="csSym"></div>
+        </div>
       </div>
-      <button class="cs-close" onclick="closeCoinDetail()">×</button>
+      <div class="cs-live-badge" id="csLiveBadge">
+        <div class="cs-live-dot"></div>LIVE
+      </div>
     </div>
+
+    <!-- Price -->
     <div class="cs-price-row">
       <div class="cs-price" id="csPrice"></div>
       <div class="cs-chg" id="csChg"></div>
     </div>
+
+    <!-- Chart canvas (full bleed) -->
     <div class="cs-chart-wrap">
-      <svg id="csChart" width="100%" height="130" viewBox="0 0 340 130" preserveAspectRatio="none"></svg>
+      <canvas class="cs-chart-canvas" id="csChartCanvas"></canvas>
     </div>
-    <div class="cs-chart-ranges" id="csRanges">
-      <button class="cs-range-btn active" onclick="setCsRange(this,'1D')">1D</button>
+
+    <!-- Range buttons -->
+    <div class="cs-chart-ranges">
+      <button class="cs-range-btn active" onclick="setCsRange(this,'LIVE')">Live</button>
+      <button class="cs-range-btn" onclick="setCsRange(this,'1D')">1D</button>
       <button class="cs-range-btn" onclick="setCsRange(this,'1W')">1W</button>
       <button class="cs-range-btn" onclick="setCsRange(this,'1M')">1M</button>
       <button class="cs-range-btn" onclick="setCsRange(this,'3M')">3M</button>
       <button class="cs-range-btn" onclick="setCsRange(this,'1Y')">1Y</button>
     </div>
+
+    <!-- Holdings -->
     <div class="cs-holding-box" id="csHoldingBox"></div>
+
+    <!-- Stats -->
     <div class="cs-stats" id="csStats"></div>
+
+    <!-- Trade buttons -->
     <div class="cs-trade-row">
       <button class="cs-buy-btn" id="csBuyBtn">Buy</button>
       <button class="cs-sell-btn" id="csSellBtn">Sell</button>
@@ -1226,6 +1274,74 @@ body{
 <div class="toast" id="toast"></div>
 
 <script>
+
+// ── COIN LOGO HELPER ──
+// Logos fetched live from CoinGecko /coins/markets (same API the app already uses)
+const COIN_LOGOS = {};  // populated by fetchCoinLogos() on init
+const COIN_FALLBACKS = {};
+
+async function fetchCoinLogos() {
+  const ids = 'bitcoin,ethereum,solana,binancecoin,ripple,cardano,dogecoin,polkadot,avalanche-2,chainlink,litecoin,tether';
+  const symMap = {
+    bitcoin:'BTC', ethereum:'ETH', solana:'SOL', binancecoin:'BNB',
+    ripple:'XRP', cardano:'ADA', dogecoin:'DOGE', polkadot:'DOT',
+    'avalanche-2':'AVAX', chainlink:'LINK', litecoin:'LTC', tether:'USDT'
+  };
+  try {
+    const r = await fetch(
+      'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=' + ids + '&per_page=20',
+      { headers: { 'Accept': 'application/json' } }
+    );
+    if (!r.ok) return;
+    const data = await r.json();
+    data.forEach(coin => {
+      const sym = symMap[coin.id];
+      if (sym && coin.image) COIN_LOGOS[sym] = coin.image;
+    });
+    // Re-render so the real logos show up
+    renderAll();
+  } catch(e) {}
+}
+
+function coinImgFallback(img, sym) {
+  const d = COIN_FALLBACKS[sym];
+  if (!d) return;
+  const span = document.createElement('span');
+  span.textContent = d.icon;
+  span.style.cssText = [
+    'width:' + d.size + 'px',
+    'height:' + d.size + 'px',
+    'border-radius:' + d.br,
+    'background:' + d.color + '18',
+    'color:' + d.color,
+    'display:flex',
+    'align-items:center',
+    'justify-content:center',
+    'font-size:' + d.fs + 'px',
+    'font-weight:700',
+    'flex-shrink:0'
+  ].join(';');
+  img.parentNode && img.parentNode.replaceChild(span, img);
+}
+
+function coinImg(sym, size, color, fallbackIcon) {
+  const br = Math.round(size * 0.28) + 'px';
+  COIN_FALLBACKS[sym] = { icon: fallbackIcon, size, br, color, fs: Math.round(size * 0.44) };
+  const src = COIN_LOGOS[sym] || '';
+  if (!src) {
+    // No logo yet — render placeholder that will be replaced on re-render
+    return '<span style="width:' + size + 'px;height:' + size + 'px;border-radius:' + br
+      + ';background:' + color + '18;color:' + color
+      + ';display:flex;align-items:center;justify-content:center'
+      + ';font-size:' + Math.round(size * 0.44) + 'px;font-weight:700;flex-shrink:0">'
+      + fallbackIcon + '</span>';
+  }
+  return '<img src="' + src + '"'
+    + ' width="' + size + '" height="' + size + '"'
+    + ' style="display:block;border-radius:' + br + ';flex-shrink:0;width:' + size + 'px;height:' + size
+    + ' onerror="coinImgFallback(this,\'' + sym + '\')"'
+    + ' alt="' + sym + '">';
+}
 const COINS=[
   {sym:'BTC', name:'Bitcoin',   icon:'₿', color:'#d4822a', price:96420,  change:2.14},
   {sym:'ETH', name:'Ethereum',  icon:'Ξ', color:'#5570c4', price:3810,   change:3.25},
@@ -1384,7 +1500,7 @@ function renderHoldings(total){
     const pct=(val/total*100).toFixed(1);
     const chgSign=c.change>=0?'+':'';
     return '<div class="holding-card" onclick="openCoinDetail(\''+c.sym+'\')">'+
-      '<div class="h-icon" style="background:'+c.color+'18;color:'+c.color+'">'+c.icon+'</div>'+
+      '<div class="h-icon" style="background:transparent;display:flex;align-items:center;justify-content:center">'+coinImg(c.sym,36,c.color,c.icon)+'</div>'+
       '<div class="h-info">'+
         '<div class="h-name">'+c.name+'</div>'+
         '<div class="h-sub">'+
@@ -1626,9 +1742,8 @@ function renderTradePage(){
 function updateSelectorBtn(){
   const coin = COINS.find(c=>c.sym===selectedSym);
   if(!coin) return;
-  document.getElementById('csIcon').style.background = coin.color+'22';
-  document.getElementById('csIcon').style.color = coin.color;
-  document.getElementById('csIcon').textContent = coin.icon;
+  document.getElementById('csIcon').style.cssText = 'background:transparent;display:flex;align-items:center;justify-content:center';
+  document.getElementById('csIcon').innerHTML = coinImg(coin.sym,32,coin.color,coin.icon);
   document.getElementById('csName').textContent = coin.name;
   document.getElementById('csSym').textContent = coin.sym;
   document.getElementById('csPrice').textContent = fmt(coin.price, coin.price>1?2:4);
@@ -1644,10 +1759,6 @@ function openCoinSheet(){
   document.getElementById('coinSheetOverlay').classList.add('open');
   document.getElementById('coinSheet').classList.add('open');
   setTimeout(()=>document.getElementById('coinSearch').focus(),300);
-}
-
-function closeCoinDetail(){
-  document.getElementById('cdSheetOverlay').classList.remove('open');
 }
 
 function closeCoinSheet(){
@@ -1673,7 +1784,7 @@ function filterCoins(q){
     const held = holdings[c.sym]||0;
     const isSelected = c.sym===selectedSym;
     return '<div class="coin-pick-item'+(isSelected?' selected':'')+'" data-sym="'+c.sym+'">'
-      +'<div class="cp-icon" style="background:'+c.color+'22;color:'+c.color+'">'+c.icon+'</div>'
+      +'<div class="cp-icon" style="background:transparent;display:flex;align-items:center;justify-content:center">'+coinImg(c.sym,32,c.color,c.icon)+'</div>'
       +'<div class="cp-info">'
         +'<div class="cp-name">'+c.name+'</div>'
         +'<div class="cp-sub">'+c.sym+(c.change>=0?' +':' ')+c.change+'%</div>'
@@ -1769,6 +1880,7 @@ document.getElementById('modalOverlay').addEventListener('click',function(e){if(
 document.querySelectorAll('.toggle:not(#livePriceToggle)').forEach(t=>t.addEventListener('click',()=>t.classList.toggle('off')));
 
 loadHoldings();renderAll();
+fetchCoinLogos(); // fetch real logos from CoinGecko, re-renders when done
 // init nav pill
 setTimeout(()=>animateNavPill('home'), 50);
 
@@ -1897,136 +2009,289 @@ function enableLivePrices(){
 
 // ── COIN DETAIL SHEET ──
 let csCurrentSym = null;
+let csCurrentRange = 'LIVE';
+let csLiveInterval = null;
+let csLivePts = [];
+let csAnimRaf = null;
+let csAnimProgress = 0;
+let csChartPts = [];
+let csChartColor = '#3dd68c';
+let csLiveTick = null;
 
 function genChartData(coin, range){
+  const count = {LIVE:60,'1D':48,'1W':56,'1M':60,'3M':90,'1Y':120}[range]||48;
+  const vol   = {LIVE:0.004,'1D':0.018,'1W':0.025,'1M':0.04,'3M':0.06,'1Y':0.10}[range]||0.018;
   const pts = [];
-  const count = {
-    '1D': 48, '1W': 56, '1M': 60, '3M': 90, '1Y': 120
-  }[range] || 48;
-  const vol = {
-    '1D': 0.018, '1W': 0.025, '1M': 0.04, '3M': 0.06, '1Y': 0.10
-  }[range] || 0.018;
-  let v = coin.price * (1 - coin.change / 100 * (count / 48));
-  for(let i = 0; i < count; i++){
-    v *= (1 + (Math.random() - 0.478) * vol);
-    pts.push(Math.max(v, coin.price * 0.1));
-  }
+  let v = coin.price * (1 - coin.change/100 * (count/48));
+  for(let i=0;i<count;i++){ v*=(1+(Math.random()-0.478)*vol); pts.push(Math.max(v,coin.price*0.05)); }
   pts.push(coin.price);
   return pts;
 }
 
-function renderCsChart(coin, range){
-  const pts  = genChartData(coin, range);
-  const W = 340, H = 130, pad = 4;
-  const mn = Math.min(...pts), mx = Math.max(...pts);
-  const range2 = mx - mn || 1;
-  const toX = i => (i / (pts.length - 1)) * W;
-  const toY = v => H - pad - ((v - mn) / range2) * (H - pad * 2);
-  const col = pts[pts.length-1] >= pts[0] ? '#3dd68c' : '#f06060';
-
-  // Build path
-  let d = `M${toX(0).toFixed(1)},${toY(pts[0]).toFixed(1)}`;
-  for(let i = 1; i < pts.length; i++){
-    const cx = (toX(i-1) + toX(i)) / 2;
-    d += ` C${cx.toFixed(1)},${toY(pts[i-1]).toFixed(1)} ${cx.toFixed(1)},${toY(pts[i]).toFixed(1)} ${toX(i).toFixed(1)},${toY(pts[i]).toFixed(1)}`;
-  }
-  // Fill area
-  const fill = d + ` L${toX(pts.length-1).toFixed(1)},${H} L${toX(0).toFixed(1)},${H} Z`;
-
-  const gradId = 'csg_' + coin.sym;
-  document.getElementById('csChart').innerHTML =
-    `<defs>
-       <linearGradient id="${gradId}" x1="0" y1="0" x2="0" y2="1">
-         <stop offset="0%" stop-color="${col}" stop-opacity="0.22"/>
-         <stop offset="100%" stop-color="${col}" stop-opacity="0"/>
-       </linearGradient>
-     </defs>
-     <path d="${fill}" fill="url(#${gradId})"/>
-     <path d="${d}" fill="none" stroke="${col}" stroke-width="2" stroke-linejoin="round"/>`;
+async function fetchGeckoChart(sym, range){
+  const id = GECKO_IDS[sym];
+  if(!id) return null;
+  const days = {LIVE:1,'1D':1,'1W':7,'1M':30,'3M':90,'1Y':365}[range]||1;
+  try{
+    const r = await fetch(`https://api.coingecko.com/api/v3/coins/${id}/market_chart?vs_currency=usd&days=${days}&precision=4`,
+      {headers:{'Accept':'application/json'}});
+    if(!r.ok) return null;
+    const d = await r.json();
+    return d.prices.map(p=>p[1]);
+  } catch(e){ return null; }
 }
 
-function openCoinDetail(sym){
+async function fetchGeckoPrice(sym){
+  const id = GECKO_IDS[sym];
+  if(!id) return null;
+  try{
+    const r = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${id}&vs_currencies=usd&include_24hr_change=true`);
+    if(!r.ok) return null;
+    const d = await r.json();
+    return { price: d[id].usd, change: d[id].usd_24h_change };
+  } catch(e){ return null; }
+}
+
+function drawChart(pts, color, canvas, animated){
+  // offsetWidth/Height are 0 when the sheet is not yet visible; fall back to CSS size or a safe default
+  const cssW = canvas.offsetWidth  || canvas.clientWidth  || canvas.getBoundingClientRect().width  || 390;
+  const cssH = canvas.offsetHeight || canvas.clientHeight || canvas.getBoundingClientRect().height || 180;
+  const W = cssW * window.devicePixelRatio;
+  const H = cssH * window.devicePixelRatio;
+  if(W === 0 || H === 0) return;   // still invisible – bail out cleanly
+  canvas.width  = W;
+  canvas.height = H;
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0,0,W,H);
+
+  if(!pts||pts.length<2) return;
+  const mn = Math.min(...pts), mx = Math.max(...pts);
+  const rng = mx - mn || 1;
+  const pad = { t:10*window.devicePixelRatio, b:20*window.devicePixelRatio, l:2, r:2 };
+  const cW = W - pad.l - pad.r;
+  const cH = H - pad.t - pad.b;
+
+  const progress = animated ? csAnimProgress : 1;
+  const visCount = Math.max(2, Math.floor(pts.length * progress));
+  const visPts = pts.slice(0, visCount);
+
+  const toX = i => pad.l + (i/(pts.length-1))*cW;
+  const toY = v => pad.t + cH - ((v-mn)/rng)*cH;
+
+  // Gradient fill
+  const grad = ctx.createLinearGradient(0, pad.t, 0, H - pad.b);
+  grad.addColorStop(0, color + '44');
+  grad.addColorStop(1, color + '00');
+
+  // Build smooth path
+  ctx.beginPath();
+  ctx.moveTo(toX(0), toY(visPts[0]));
+  for(let i=1;i<visPts.length;i++){
+    const cx = (toX(i-1)+toX(i))/2;
+    ctx.bezierCurveTo(cx,toY(visPts[i-1]),cx,toY(visPts[i]),toX(i),toY(visPts[i]));
+  }
+  // Fill
+  ctx.lineTo(toX(visPts.length-1), H-pad.b);
+  ctx.lineTo(toX(0), H-pad.b);
+  ctx.closePath();
+  ctx.fillStyle = grad;
+  ctx.fill();
+
+  // Line
+  ctx.beginPath();
+  ctx.moveTo(toX(0), toY(visPts[0]));
+  for(let i=1;i<visPts.length;i++){
+    const cx = (toX(i-1)+toX(i))/2;
+    ctx.bezierCurveTo(cx,toY(visPts[i-1]),cx,toY(visPts[i]),toX(i),toY(visPts[i]));
+  }
+  ctx.strokeStyle = color;
+  ctx.lineWidth = 2.5 * window.devicePixelRatio;
+  ctx.lineJoin = 'round';
+  ctx.stroke();
+
+  // Dot at current price
+  if(progress>=1){
+    const lx = toX(visPts.length-1), ly = toY(visPts[visPts.length-1]);
+    ctx.beginPath();
+    ctx.arc(lx, ly, 5*window.devicePixelRatio, 0, Math.PI*2);
+    ctx.fillStyle = color;
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(lx, ly, 3*window.devicePixelRatio, 0, Math.PI*2);
+    ctx.fillStyle = '#fff';
+    ctx.fill();
+  }
+}
+
+function animateChart(pts, color){
+  const canvas = document.getElementById('csChartCanvas');
+  if(csAnimRaf) cancelAnimationFrame(csAnimRaf);
+  csAnimProgress = 0;
+  const duration = 600;
+  const start = performance.now();
+  function frame(now){
+    const elapsed = now - start;
+    csAnimProgress = Math.min(1, elapsed/duration);
+    // ease out cubic
+    const p = 1 - Math.pow(1-csAnimProgress,3);
+    csAnimProgress = p;
+    drawChart(pts, color, canvas, true);
+    if(csAnimProgress < 1) csAnimRaf = requestAnimationFrame(frame);
+    else { csAnimProgress=1; drawChart(pts,color,canvas,false); }
+  }
+  csAnimRaf = requestAnimationFrame(frame);
+}
+
+function startLiveTicker(){
+  stopLiveTicker();
+  const coin = COINS.find(c=>c.sym===csCurrentSym);
+  if(!coin) return;
+  // Seed live data from current price
+  if(csLivePts.length===0){
+    let v = coin.price * 0.998;
+    for(let i=0;i<59;i++){ v*=(1+(Math.random()-0.49)*0.003); csLivePts.push(v); }
+    csLivePts.push(coin.price);
+  }
+  csLiveTick = function(){
+    const last = csLivePts[csLivePts.length-1];
+    const next = last*(1+(Math.random()-0.49)*0.002);
+    csLivePts.push(next);
+    if(csLivePts.length>120) csLivePts.shift();
+    csChartColor = next >= csLivePts[0] ? '#3dd68c' : '#f06060';
+    drawChart(csLivePts, csChartColor, document.getElementById('csChartCanvas'), false);
+    // flash price
+    const el = document.getElementById('csPrice');
+    if(el){
+      const prev = parseFloat(el.dataset.raw||coin.price);
+      el.dataset.raw = next;
+      el.textContent = fmt(next);
+      el.classList.remove('flash-up','flash-down');
+      void el.offsetWidth;
+      el.classList.add(next>=prev?'flash-up':'flash-down');
+      setTimeout(()=>el.classList.remove('flash-up','flash-down'),600);
+    }
+  };
+  csLiveInterval = setInterval(csLiveTick, 15000);
+}
+
+function stopLiveTicker(){
+  if(csLiveInterval){ clearInterval(csLiveInterval); csLiveInterval=null; }
+}
+
+async function loadChartData(coin, range){
+  const canvas = document.getElementById('csChartCanvas');
+  // Show loading shimmer
+  canvas.style.opacity='0.3';
+
+  let pts = null;
+  if(range!=='LIVE'){
+    pts = await fetchGeckoChart(coin.sym, range);
+  }
+  if(!pts) pts = genChartData(coin, range);
+
+  csChartPts  = pts;
+  csChartColor= pts[pts.length-1]>=pts[0]?'#3dd68c':'#f06060';
+  canvas.style.opacity='1';
+  animateChart(pts, csChartColor);
+}
+
+async function openCoinDetail(sym){
   const coin = COINS.find(c => c.sym === sym);
   if(!coin) return;
   csCurrentSym = sym;
+  csCurrentRange = 'LIVE';
+  csLivePts = [];
+  stopLiveTicker();
 
   // Header
-  document.getElementById('csIcon').textContent = coin.icon;
-  document.getElementById('csIcon').style.cssText = `background:${coin.color}18;color:${coin.color}`;
+  document.getElementById('csIcon').innerHTML = coinImg(coin.sym,40,coin.color,coin.icon);
+  document.getElementById('csIcon').style.cssText = 'background:transparent;display:flex;align-items:center;justify-content:center';
   document.getElementById('csName').textContent = coin.name;
   document.getElementById('csSym').textContent  = coin.sym;
 
-  // Price
-  document.getElementById('csPrice').textContent = fmt(coin.price);
+  // Try live price from CoinGecko
+  const live = await fetchGeckoPrice(sym).catch(()=>null);
+  const price  = live?.price  ?? coin.price;
+  const change = live?.change ?? coin.change;
+
+  document.getElementById('csPrice').textContent = fmt(price);
+  document.getElementById('csPrice').dataset.raw = price;
   const chgEl = document.getElementById('csChg');
-  const sign = coin.change >= 0 ? '+' : '';
-  chgEl.textContent  = sign + coin.change + '%';
-  chgEl.className    = 'cs-chg ' + (coin.change >= 0 ? 'pos' : 'neg');
+  const sign = change >= 0 ? '+' : '';
+  chgEl.textContent = sign + change.toFixed(2) + '%';
+  chgEl.className   = 'cs-chg ' + (change >= 0 ? 'pos' : 'neg');
 
-  // Chart
-  document.querySelectorAll('.cs-range-btn').forEach((b,i) => b.classList.toggle('active', i===0));
-  renderCsChart(coin, '1D');
+  // Reset range buttons
+  document.querySelectorAll('.cs-range-btn').forEach((b,i)=>b.classList.toggle('active',i===0));
 
-  // Holdings summary
-  const held = holdings[sym] || 0;
-  const val  = held * coin.price;
-  const total = COINS.reduce((s,c) => s + (holdings[c.sym]||0)*c.price, 0);
-  const pct  = total > 0 ? (val/total*100).toFixed(1) : '0.0';
-  document.getElementById('csHoldingBox').innerHTML =
-    `<div class="cs-hb-item"><div class="cs-hb-label">You own</div><div class="cs-hb-val">${fmtCoin(held)} ${sym}</div></div>` +
-    `<div class="cs-hb-item"><div class="cs-hb-label">Value</div><div class="cs-hb-val">${fmt(val)}</div></div>` +
+  // Holdings
+  const held = holdings[sym]||0, val=held*price;
+  const total=COINS.reduce((s,c)=>s+(holdings[c.sym]||0)*c.price,0);
+  const pct=total>0?(val/total*100).toFixed(1):'0.0';
+  document.getElementById('csHoldingBox').innerHTML=
+    `<div class="cs-hb-item"><div class="cs-hb-label">You own</div><div class="cs-hb-val">${fmtCoin(held)} ${sym}</div></div>`+
+    `<div class="cs-hb-item"><div class="cs-hb-label">Value</div><div class="cs-hb-val">${fmt(val)}</div></div>`+
     `<div class="cs-hb-item"><div class="cs-hb-label">Portfolio</div><div class="cs-hb-val">${pct}%</div></div>`;
 
   // Stats
-  const h24  = (coin.price * 1.015).toFixed(coin.price > 100 ? 2 : 4);
-  const l24  = (coin.price * 0.978).toFixed(coin.price > 100 ? 2 : 4);
-  const mcap = coin.price > 1000
-    ? '$' + (coin.price * 19_000_000).toLocaleString('en',{notation:'compact',maximumFractionDigits:2})
-    : '$' + (coin.price * 1_000_000_000).toLocaleString('en',{notation:'compact',maximumFractionDigits:2});
-  document.getElementById('csStats').innerHTML =
-    `<div class="cs-stat"><div class="cs-stat-label">24h High</div><div class="cs-stat-val">$${h24}</div></div>` +
-    `<div class="cs-stat"><div class="cs-stat-label">24h Low</div><div class="cs-stat-val">$${l24}</div></div>` +
-    `<div class="cs-stat"><div class="cs-stat-label">Market Cap</div><div class="cs-stat-val">${mcap}</div></div>` +
-    `<div class="cs-stat"><div class="cs-stat-label">Avg Cost</div><div class="cs-stat-val">${held > 0 ? fmt(val/held) : '—'}</div></div>`;
+  const h24=(price*1.015).toFixed(price>100?2:4);
+  const l24=(price*0.978).toFixed(price>100?2:4);
+  const mcap=price>1000
+    ?'$'+(price*19_000_000).toLocaleString('en',{notation:'compact',maximumFractionDigits:2})
+    :'$'+(price*1_000_000_000).toLocaleString('en',{notation:'compact',maximumFractionDigits:2});
+  document.getElementById('csStats').innerHTML=
+    `<div class="cs-stat"><div class="cs-stat-label">24h High</div><div class="cs-stat-val">$${h24}</div></div>`+
+    `<div class="cs-stat"><div class="cs-stat-label">24h Low</div><div class="cs-stat-val">$${l24}</div></div>`+
+    `<div class="cs-stat"><div class="cs-stat-label">Market Cap</div><div class="cs-stat-val">${mcap}</div></div>`+
+    `<div class="cs-stat"><div class="cs-stat-label">Avg Cost</div><div class="cs-stat-val">${held>0?fmt(val/held):'—'}</div></div>`;
 
-  // Wire trade buttons
-  document.getElementById('csBuyBtn').onclick  = () => { closeCoinDetail(); openBuyFor(sym); };
-  document.getElementById('csSellBtn').onclick = () => { closeCoinDetail(); openSellFor(sym); };
+  // Trade buttons
+  document.getElementById('csBuyBtn').onclick  = ()=>{ closeCoinDetail(); openBuyFor(sym); };
+  document.getElementById('csSellBtn').onclick = ()=>{ closeCoinDetail(); openSellFor(sym); };
 
-  document.getElementById('cdSheetOverlay').classList.add('open');
+  // Show sheet
+  // Show sheet with slide-up animation
+  const overlay = document.getElementById('cdSheetOverlay');
+  overlay.scrollTop = 0;
+  overlay.classList.remove('closing');
+  overlay.classList.add('visible');
+  requestAnimationFrame(() => requestAnimationFrame(() => overlay.classList.add('open')));
+
+  // Start live chart after sheet animates in (so canvas has real dimensions)
+  setTimeout(()=>{
+    // Ensure canvas dimensions are set now that the sheet is visible
+    const canvas = document.getElementById('csChartCanvas');
+    const pts = csLivePts.length ? csLivePts : genChartData(coin, 'LIVE');
+    startLiveTicker();
+    csChartColor = '#3dd68c';
+    drawChart(pts, csChartColor, canvas, false);
+  }, 350);
 }
 
-function setCsRange(btn, range){
-  document.querySelectorAll('.cs-range-btn').forEach(b => b.classList.remove('active'));
+function closeCoinDetail(){
+  stopLiveTicker();
+  if(csAnimRaf){ cancelAnimationFrame(csAnimRaf); csAnimRaf=null; }
+  const overlay = document.getElementById('cdSheetOverlay');
+  overlay.classList.remove('open');
+  overlay.classList.add('closing');
+  setTimeout(() => { overlay.classList.remove('visible','closing'); }, 400);
+}
+
+async function setCsRange(btn, range){
+  document.querySelectorAll('.cs-range-btn').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
-  const coin = COINS.find(c => c.sym === csCurrentSym);
-  if(coin) renderCsChart(coin, range);
-}
-
-function openBuyFor(sym){
-  const opts = COINS.map(c => '<option value="'+c.sym+'"'+(c.sym===sym?' selected':'')+'>'+c.name+' ('+c.sym+')</option>').join('');
-  document.getElementById('buyAsset').innerHTML = opts;
-  updateBuyPreview();
-  document.getElementById('buyOverlay').classList.add('open');
-  document.getElementById('buySheet').classList.add('open');
-}
-
-function openSellFor(sym){
-  // Switch to trade page sell tab for this coin
-  navigateTo('trade');
-  setTimeout(() => {
-    // select sell tab
-    document.querySelectorAll('.trade-tab').forEach(t => t.classList.remove('active-buy','active-sell'));
-    const tabs = document.querySelectorAll('.trade-tab');
-    if(tabs[1]) { tabs[1].classList.add('active-sell'); }
-    // select coin in picker
-    document.querySelectorAll('.coin-pick-item').forEach(el => {
-      el.classList.toggle('selected', el.dataset.sym === sym);
-    });
-    selectedSym = sym;
-    updateSelectorBtn();
-    updateTradePreview();
-  }, 50);
+  csCurrentRange = range;
+  const coin = COINS.find(c=>c.sym===csCurrentSym);
+  if(!coin) return;
+  const liveBadge = document.getElementById('csLiveBadge');
+  if(range==='LIVE'){
+    liveBadge.style.opacity='1';
+    startLiveTicker();
+  } else {
+    liveBadge.style.opacity='0.3';
+    stopLiveTicker();
+    await loadChartData(coin, range);
+  }
 }
 
 </script>
