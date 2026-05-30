@@ -2173,7 +2173,19 @@ async function startLiveTicker(){
       csLivePts.shift();
     }
 
-    if(csLivePts.length < 2) return;
+if(csLivePts.length < 2){
+
+  csLivePts = [price, price];
+
+  drawChart(
+    csLivePts,
+    '#3dd68c',
+    document.getElementById('csChartCanvas'),
+    false
+  );
+
+  return;
+}
 
     csChartColor =
       price >= csLivePts[0]
